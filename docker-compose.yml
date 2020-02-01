@@ -1,11 +1,11 @@
 version: '3.7'
 
 services:
-    img_compressor:
+    img_processor:
         build: .
         volumes:
             - ./src:/app/src
             - ./input:/app/input
             - ./output:/app/output
         command:
-            python3 /app/src/img_compress.py -verbose
+            python3 /app/src/img_process.py --verbose

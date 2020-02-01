@@ -1,4 +1,9 @@
 .DS_Store
 .vscode/
 venv/
+__pycache__/
 *.pyc
+
+output/*
+input/*
+!input/example.jpg
