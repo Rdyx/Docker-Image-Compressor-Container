@@ -5,7 +5,7 @@
 Quick image compressor container using [**Pillow**](https://pillow.readthedocs.io/en/stable/).
 
 
-Use `docker-compose build` to build up the image then put the images you want to compress in the `input` folder. 
+Use `docker-compose build` to build up the image then put the images you want to compress in the `input` folder.
 
 Use `docker-compose up` to compress images from `/input/` folder and get them from `/output/` folder.
 
@@ -13,19 +13,19 @@ You can also directly use the scripts from `/src/`. Don't forget to create `/inp
 
 ---
 ## Flags
-### `--verbose` 
+### `--verbose`
 Used to have output informations.
 
-### `--max-height` 
+### `--max-height [number]`
 Resize image from the max heightyou want for your pictures.
 
-### `--max-width` 
+### `--max-width [number]`
 Resize image from the max width you want for your pictures.
 
-### `--ratio` 
+### `--ratio [float]`
 Resize image based on a ratio.
 
-### `--quality` 
+### `--quality [number]`
 Set the quality of compression (default to 65).
 
 ---
