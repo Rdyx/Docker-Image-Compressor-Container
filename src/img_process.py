@@ -2,7 +2,7 @@
 
 import os
 
-from PIL import Image
+from PIL import Image, ImageSequence
 
 import settings
 import utils
@@ -16,9 +16,16 @@ def get_image_infos(img, image_path):
     image_weight = os.path.getsize(image_path)
 
     return {
-        'size': {'height': image_size[0], 'width': image_size[1]},
+        'size': {'width': image_size[0], 'height': image_size[1]},
         'weight': image_weight,
     }
+
+
+def process_image(image, height_width_ratio, width_height_ratio, img_width, img_height):
+    # Trying to redimension image
+    return img_redimension.select_redimension_system(
+        image, height_width_ratio, width_height_ratio, img_width, img_height
+    )
 
 
 # Compress each image found in input folder
@@ -31,24 +38,44 @@ for image_input_name in os.listdir(settings.IMG_INPUT_DIRECTORY):
 
         # Get image infos such as it's dimensions and it's weight in bytes
         input_image_infos = get_image_infos(image, image_input_path)
-        img_height = input_image_infos['size']['height']
         img_width = input_image_infos['size']['width']
+        img_height = input_image_infos['size']['height']
 
         # Image ratios
-        height_width_ratio = (img_width / img_height)
         width_height_ratio = (img_height / img_width)
+        height_width_ratio = (img_width / img_height)
 
-        # Trying to redimension image
-        image = img_redimension.select_redimension_system(
-            image, height_width_ratio, width_height_ratio, img_height, img_width
-        )
+        # Get number of frames in image
+        n_frames = getattr(image, 'n_frames', 1)
 
-        compression_quality_value = img_compress.get_image_compression_quality()
+        # "Normal" image, 1 frame (jpg, png...)
+        if n_frames == 1:
+            image = process_image(
+                image, height_width_ratio, width_height_ratio, img_width, img_height
+            )
+            # Get image compression quality (Only available for jpg)
+            compression_quality_value = img_compress.get_image_compression_quality()
+            # Save image
+            image.save(fp=(image_output_path), optimize=True, quality=compression_quality_value)
+            output_image_infos = get_image_infos(image, image_output_path)
 
-        # Save image
-        image.save(fp=(image_output_path), optimize=True, quality=compression_quality_value)
+        # in the case of a multiframe image (.gif)
+        else:
+            frames = []
 
-        output_image_infos = get_image_infos(image, image_output_path)
+            # Process each frame as single image
+            for frame in ImageSequence.Iterator(image):
+                frames.append(
+                    process_image(
+                        frame, height_width_ratio, width_height_ratio, img_width, img_height
+                    )
+                )
+
+            # Save gif, note that quality tag is not available for gifs
+            frames[0].save(
+                fp=(image_output_path), optimize=True, save_all=True, append_images=frames[1:]
+            )
+            output_image_infos = get_image_infos(frames[0], image_output_path)
 
         # Giving image modifications result
         if settings.VERBOSE_ARG:

@@ -6,7 +6,8 @@ import sys
 import utils
 
 ARGS_LIST = sys.argv
-IMG_FILE_FORMATS = ['jpg', 'jpeg', 'png']
+IMG_FILE_FORMATS = ['jpg', 'jpeg', 'png', 'gif']
+# IMG_FILE_FORMATS = ['gif']
 
 CURRENT_DIRECTORY = os.getcwd()
 IMG_INPUT_DIRECTORY = CURRENT_DIRECTORY + '/input/'

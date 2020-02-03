@@ -7,4 +7,6 @@ __pycache__/
 output/*
 input/*
 !input/example.jpg
+!input/example.gif
 !output/example.jpg
+!output/example.gif
