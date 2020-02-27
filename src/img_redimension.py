@@ -1,6 +1,7 @@
 """ Image redimension related function """
 
 import sys
+from PIL import Image
 
 import settings
 import utils
@@ -12,8 +13,8 @@ def get_new_dimensions(img, axis, arg, args_list, ratio):
     new_calculated_axis_dimension = wanted_axis_dimension * ratio
 
     if axis == 'width':
-        return img.resize([wanted_axis_dimension, int(new_calculated_axis_dimension)])
-    return img.resize([int(new_calculated_axis_dimension), wanted_axis_dimension])
+        return img.resize([wanted_axis_dimension, int(new_calculated_axis_dimension)], Image.ANTIALIAS)
+    return img.resize([int(new_calculated_axis_dimension), wanted_axis_dimension], Image.ANTIALIAS)
 
 
 def resize_image_from_command_args(
@@ -26,7 +27,7 @@ def resize_image_from_command_args(
         height_resize_setting and not width_resize_setting and
         img_height > int(utils.get_arg_value(height_resize_setting, args_list_setting))
     ):
-        image = get_new_dimensions(
+        return get_new_dimensions(
             image, 'height', height_resize_setting, args_list_setting, height_width_ratio
         )
 
@@ -34,7 +35,7 @@ def resize_image_from_command_args(
         width_resize_setting and not height_resize_setting and
         img_width > int(utils.get_arg_value(width_resize_setting, args_list_setting))
     ):
-        image = get_new_dimensions(
+        return get_new_dimensions(
             image, 'width', width_resize_setting, args_list_setting, width_height_ratio
         )
 
